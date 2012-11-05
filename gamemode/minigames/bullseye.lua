@@ -40,7 +40,7 @@ function WARE:StartAction()
 	end
 end
 
-function WARE:TargetHit( ply )
+function WARE:TargetHit( bullseye, ply )
 	ply.BullseyeHit = ply.BullseyeHit +1
 end
 

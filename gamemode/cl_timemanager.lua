@@ -1,26 +1,38 @@
 
+-- TODO: Separate these, as the old code does
 GM.Announcers = {
+	{	
+		Sound( "ware/countdown_ann_sec1.mp3" ),
+		Sound( "ware/countdown_ann_sec2.mp3" ),
+		Sound( "ware/countdown_ann_sec3.mp3" ),
+		Sound( "ware/countdown_ann_sec4.mp3" ),
+		Sound( "ware/countdown_ann_sec5.mp3" )
+	},
 	{
-		"ware/countdown_dos_sec1.mp3",
-		"ware/countdown_dos_sec2.mp3",
-		"ware/countdown_dos_sec3.mp3",
-		"ware/countdown_dos_sec4.mp3",
-		"ware/countdown_dos_sec5.mp3"
-	},
-	{	-- TF2 Rulz		TODO: Fallback, and multiple announcer support!
-		"vo/announcer_begins_1sec.wav",
-		"vo/announcer_begins_2sec.wav",
-		"vo/announcer_begins_3sec.wav",
-		"vo/announcer_begins_4sec.wav",
-		"vo/announcer_begins_5sec.wav"
-	},
+		Sound( "ware/countdown_tick_high.wav" ),
+		Sound( "ware/countdown_tick_low.wav"  ),
+		Sound( "ware/countdown_tick_high.wav" ),
+		Sound( "ware/countdown_tick_low.wav"  ),
+		Sound( "ware/countdown_tick_high.wav" )
+	}
 }
+
+if ( file.Exists( "sound/vo/announcer_begins_1sec.wav", "GAME" ) ) then
+	GM.Announcers[1] = {
+		Sound( "vo/announcer_begins_1sec.wav" ),
+		Sound( "vo/announcer_begins_2sec.wav" ),
+		Sound( "vo/announcer_begins_3sec.wav" ),
+		Sound( "vo/announcer_begins_4sec.wav" ),
+		Sound( "vo/announcer_begins_5sec.wav" )
+	}
+end
+
 
 GM.WareIsPlaying	= false
 GM.WareInWindup		= false
 
 GM.WarePhases			= {}
-GM.WareHasAnnouncer		= true
+GM.WareAnnouncer		= 1
 
 function GM:Think()
 	
@@ -32,10 +44,9 @@ function GM:Think()
 			self.ClockTime		= nil
 			self.ClockPercent	= 0
 		else
-			if ( !self.WareInWindup and self.WareHasAnnouncer ) then
+			if ( !self.WareInWindup and self.WareAnnouncer > 0 and 
 				if ( sec <= 5 and self.ClockAnnounced != sec ) then
-					surface.PlaySound( self.Announcers[2][sec] )	-- TODO: Fallback and multiple announcer support
-				
+					surface.PlaySound( self.Announcers[self.WareAnnouncer][sec] )
 					self.ClockAnnounced = sec
 				end
 			end
@@ -49,7 +60,6 @@ end
 function GM:SetClockTime( sec )
 	self.ClockTime		= sec
 
-	MsgN( "ClockTime = " .. tostring( sec ) )
 	if ( sec != nil ) then
 		self.ClockEnd		= CurTime() + sec
 		self.ClockAnnounced	= 0
@@ -63,7 +73,7 @@ function GM:OnWareReported( windup, phases )
 	self.WareIsPlaying		= false
 	self.WareInWindup		= true
 	
-	self:SetClockTime( windup )
+	self:SetClockTime( self.WareWindup )
 end
 
 function GM:OnPhaseReported( isPlaying, phase )

@@ -67,7 +67,7 @@ if ( SERVER ) then
 		local ware 	= GAMEMODE.Ware
 	
 		if ( ware and ware.TargetHit and IsValid( ply ) and ply:IsPlayer() ) then
-			ware:SafeCall( ware.TargetHit, ply )
+			ware:SafeCall( ware.TargetHit, self, ply )
 		end
 	end
 
