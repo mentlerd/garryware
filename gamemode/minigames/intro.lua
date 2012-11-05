@@ -17,7 +17,7 @@ function WARE:IsPlayable( num )
 end
 
 function WARE:Initialize()	
-	self:Instruction( "A new GarryWare game stars!" )
+	self:Instruction( "A new GarryWare game starts!" )
 	
 	self.BoxTop = self:GetPoints( ONCRATE )
 end
