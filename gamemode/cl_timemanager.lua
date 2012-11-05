@@ -44,7 +44,7 @@ function GM:Think()
 			self.ClockTime		= nil
 			self.ClockPercent	= 0
 		else
-			if ( !self.WareInWindup and self.WareAnnouncer > 0 and 
+			if ( !self.WareInWindup and self.WareAnnouncer > 0 ) then
 				if ( sec <= 5 and self.ClockAnnounced != sec ) then
 					surface.PlaySound( self.Announcers[self.WareAnnouncer][sec] )
 					self.ClockAnnounced = sec

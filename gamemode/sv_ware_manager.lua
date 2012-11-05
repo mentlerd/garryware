@@ -15,17 +15,20 @@ function GM:LoadWareGames()
 	MsgN( "Loading minigames..." )
 	for _, game in pairs( games ) do
 		WARE = {}
-
-		include( "../" .. base .. game )
 		
-		local id = game:StripExtension()
+		if  ( game != "_example.txt" ) then
+			
+			include( "../" .. base .. game )
+			
+			local id = game:StripExtension()
 			Msg( " - " .. id .. "\t" )
-
-		if ( WARE.Room and ( WARE.Room == "*" or self:FindRoomFor( WARE.Room, WARE.MinPlayers ) ) ) then
-			ware_manager.Register( game:StripExtension(), WARE )		
-			MsgN( "OK!" )
-		else
-			MsgN( "Incompatible map! ( Missing room '" .. tostring( WARE.Room ) .. "' )" )
+			
+			if ( WARE.Room and ( WARE.Room == "*" or self:FindRoomFor( WARE.Room, WARE.MinPlayers ) ) ) then
+				ware_manager.Register( game:StripExtension(), WARE )		
+				MsgN( "OK!" )
+			else
+				MsgN( "Incompatible map! ( Missing room '" .. tostring( WARE.Room ) .. "' )" )
+			end
 		end
 	end
 end
