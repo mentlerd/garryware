@@ -1,10 +1,10 @@
 
-util.AddNetworkString( "ware_WareTimes" )
+util.AddNetworkString( "ware_WareInfo" )
 
-function GM:ReportWareTimes()
+function GM:ReportWareInfo()
 	if ( !self.Ware ) then return end
 	
-	net.Start( "ware_WareTimes" )
+	net.Start( "ware_WareInfo" )
 		net.WriteInt( self.Ware.Windup, 8 )
 		net.WriteTable( self.Ware.Phases )
 	net.Broadcast()

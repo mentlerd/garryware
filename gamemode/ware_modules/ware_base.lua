@@ -48,7 +48,7 @@ function BASE:Setup()
 
 	if ( !self:IsPlayable( count ) ) then return false end
 	
-	if ( self.Room == "*" ) then
+	if ( self.Room == ROOM_ANY ) then
 		self.Room = GAMEMODE.CurrRoom
 	else
 		self.Room = GAMEMODE:FindRoomFor( self.Room, count )
@@ -107,7 +107,11 @@ function BASE:InternalThink()
 end
 
 function BASE:InternalEnd()
+	self.Phase		= nil
+	self.IsPlaying 	= false
+
 	GAMEMODE:UpdatePlayerStates( true )
+	GAMEMODE:ReportWarePhase()
 	
 	for _, ply in pairs( self:GetPlayers() ) do
 		if ( !ply:IsLocked() or self.HideStates ) then
@@ -165,13 +169,8 @@ function BASE:ForceNextPhase()
 	
 	local phases = self.Phases
 	
-	if ( !phases or !phases[ self.Phase +2 ] ) then
+	if ( !phases[ self.Phase +2 ] ) then
 		self:InternalEnd()
-		
-		self.Phase		= nil
-		self.IsPlaying 	= false
-		
-		return false
 	else
 		self.Phase 		= self.Phase +1
 		
@@ -182,10 +181,9 @@ function BASE:ForceNextPhase()
 		else
 			self:SafeCall( self.StartPhase, self.Phase )
 		end
+		
+		GAMEMODE:ReportWarePhase()
 	end
-	
-	GAMEMODE:ReportWarePhase()
-	return true
 end
 
 function BASE:ForceEnd()
@@ -194,9 +192,6 @@ function BASE:ForceEnd()
 	end
 
 	self:InternalEnd()
-	
-	self.Phase 		= nil
-	self.IsPlaying	= false
 end
 
 -- Internal utils
