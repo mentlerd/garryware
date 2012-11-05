@@ -36,8 +36,8 @@ function EFFECT:Init( data )
 		particle:SetDieTime( 0.4 )
 		particle:SetBounce( 0 )
 		
-		particle:SetVelocity( Vector(0,0,0) )
-		particle:SetGravity( Vector( 0, 0, 0 ) )
+		particle:SetVelocity( ZERO )
+		particle:SetGravity( ZERO )
 	
 	emitter:Finish()
 	

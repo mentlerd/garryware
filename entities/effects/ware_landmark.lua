@@ -11,7 +11,7 @@ function EFFECT:Init( data )
 		particle:SetColor( 119, 199, 255 )
 		
 		particle:SetAlpha( 250, 0 )
-		particle:SetSize( math.random(5, 12), 0 )
+		particle:SetSize( math.Rand(5, 12), 0 )
 		
 		particle:SetDieTime( 2.7 )
 		particle:SetVelocity( VectorRand() * math.random(64, 92) )

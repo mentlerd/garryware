@@ -10,9 +10,9 @@ function EFFECT:Init( data )
 		particle:SetColor( 255, 90, 90 )
 		
 		particle:SetAlpha( 250, 0 )
-		particle:SetSize( math.random(5, 10), 0 )
+		particle:SetSize( math.Rand(5, 10), 0 )
 	
-		particle:SetDieTime( math.random(1, 3) )
+		particle:SetDieTime( math.Rand(1, 3) )
 		particle:SetVelocity( VectorRand() * 100 + Vector(0,0,50) )
 		
 		particle:SetBounce( 0.8 )
