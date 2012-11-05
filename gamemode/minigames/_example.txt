@@ -1,0 +1,58 @@
+
+-- Members
+WARE.Author
+
+WARE.Room
+
+WARE.MinPlayers
+WARE.MaxPlayers
+
+WARE.Windup
+WARE.Phases / WARE.Length
+
+WARE.DefaultRole
+
+WARE.InitialState
+WARE.HideStates
+
+WARE.DieOnLose
+WARE.StripWeapons
+
+WARE.DeadShouldCollide
+
+
+-- Public API
+WARE:GetPoints( group )
+WARE:GetPointCount( group )
+WARE:GetRandomPoints( num, group )
+WARE:GetRandomFilterBox( num, group, filter, mins, [maxs] )
+
+WARE:Instruction( text, [bgColor], [fgColor] )
+
+WARE:GetPlayers()
+WARE:PlayerRatio( ratio, min, max )
+
+WARE:GetPhase()
+WARE:SetPhaseTime()
+
+WARE:AddToTrash( entity )
+
+WARE:ForceNextPhase()
+WARE:ForceEnd()
+
+WARE:GiveAll( weapon )
+WARE:ApplyAll( state, [lock] )
+
+-- Callbacks
+IsPlayable( count )
+
+StartAction()
+EndAction()
+
+StartPhase( phaseID )
+EndPhase( phaseID )
+
+-- Misc Callbacks
+[ware_ball]			- BallHitEntity( ball, entity )
+[ware_bullseye]		- TargetCollide( bullseye, data, phys )
+[ware_bullseye] 	- TargetHit( bullseye, ply )
