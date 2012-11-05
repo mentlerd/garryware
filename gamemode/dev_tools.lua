@@ -17,7 +17,7 @@ end )
 
 concommand.Add( "ware_debug_reinit", function()
 	GAMEMODE:InitPostEntity()
-	GAMEMODE.IsGameEnd = false
+	SetGlobalBool( "IsGameEnd", false )
 end )
 
 local flags = { FCVAR_ARCHIVE }

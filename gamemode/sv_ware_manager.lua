@@ -64,14 +64,14 @@ end
 	Game Loop
 ]]--
 
-GM.IsGameEnd 	= false
+SetGlobalBool( "IsGameEnd", false )
 
 function GM:PollNextWare()
 	return table.remove( self.WareSequence )
 end
 
 function GM:WareThink()
-	if ( self.IsGameEnd ) then return end
+	if ( GetGlobalBool( "IsGameEnd", false ) ) then return end
 	
 	if ( self.Ware ) then
 		if ( !self.Ware.IsPlaying ) then	
@@ -98,11 +98,11 @@ function GM:WareThink()
 				
 				if ( !self.Ware ) then
 					MsgN( "No wares left, game ended" )
-		
-					self.IsGameEnd = true
+					
+					SetGlobalBool( "IsGameEnd", true )
 					return
 				end
-			
+				
 				if ( !self.Ware:Setup() ) then
 					self:Warning( self.Ware.ID .. " failed to initialize!" )
 					self.Ware = nil
