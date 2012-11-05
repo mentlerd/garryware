@@ -15,6 +15,7 @@ function GM:PlayerStateEffect( ply, state )
 		pos:Effect( "ware_good" )
 		ply:EmitSound( plyWin, 100, 100 )
 		
+		ply:SetPlayerColor( Vector( colWin.r/255, colWin.g/255, colWin.b/255 ) )
 		ply:SendPopup( "Success!", colWin )
 		
 		local anim = bool and ACT_SIGNAL_FORWARD or ACT_SIGNAL_HALT
@@ -22,7 +23,8 @@ function GM:PlayerStateEffect( ply, state )
 	else
 		pos:Effect( "ware_bad" )
 		ply:EmitSound( plyLose, 100, 100 )
-	
+		
+		ply:SetPlayerColor( Vector( colLose.r/255, colLose.g/255, colLose.b/255 ) )
 		ply:SendPopup( "FAIL", colLose )
 	
 		local anim = bool and ACT_ITEM_THROW or ACT_ITEM_DROP

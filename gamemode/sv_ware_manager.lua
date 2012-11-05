@@ -84,7 +84,7 @@ function GM:WareThink()
 		end
 	else
 		if ( !self.WareSequence ) then return end
-	
+		
 		if ( self.NextWareStart < CurTime() ) then
 			
 			if ( self.LastWare ) then
@@ -93,7 +93,12 @@ function GM:WareThink()
 				return
 			end
 
-			while( !self.Ware ) do		
+			while( !self.Ware ) do
+				
+				for _, v in pairs ( player.GetAll() ) do
+					v:SetPlayerColor( Vector( 0.5, 0.5, 0.5 ) )
+				end
+				
 				self.Ware = self:PollNextWare()
 				
 				if ( !self.Ware ) then
@@ -110,6 +115,7 @@ function GM:WareThink()
 					self.NextWareStart = CurTime() +4
 					return
 				end
+				
 			end
 			
 		end
