@@ -1,0 +1,11 @@
+"terrortown"
+{
+	"base"		"base"
+	"title"		"GarryWare"
+	"maps"		"^wa_"
+	"menusystem"	"1"
+
+	"settings"
+	{
+	}
+}
