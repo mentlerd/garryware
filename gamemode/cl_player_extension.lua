@@ -64,8 +64,6 @@ function meta:IsLocked()
 end
 
 net.Receive( "ware_StateLock", function()
-	MsgN( "State lock activated" )
-
 	LocalPlayer()._lock	= true
 end )
 

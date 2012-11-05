@@ -1,66 +1,4 @@
 
---[[
-	Static Info:
-		WARE.Author
-		WARE.Name
-		
-		WARE.Room			= "plain"
-		WARE.Type			= "generic"
-		
-		WARE.PrecacheModels	= {}
-		
-		WARE.MinPlayers		= 1
-		WARE.MaxPlayers		= -1
-		
-		WARE.DefaultRole	= -1
-		WARE.DieOnLose		= false
-		
-		WARE.InitialState	= false
-		WARE.HideStates		= false
-		
-		WARE.Windup			= 6
-		WARE.Phases			= { 10, 10, 30 }
-		
-	Functions
-		WARE:ForceNoAnnouncer()
-	
-		WARE:ForceNextPhase()
-		WARE:GetPhase()
-		
-		WARE:Instruction( text, [bgColor], [fgColor] [filter] )
-		WARE:RoleInstruction( text, role, [bgColor], [fgColor] )
-		
-		Player:IsWarePlayer()
-		
-		Player:ApplyWin( noLock )
-		Player:ApplyLose( noLock )
-		
-		Player:SetLocked()
-		Player:IsLocked()
-		
-		Player:SetRole( id )
-		Player:GetRole()
-	
-		Player:IsFakingDeath()
-	
-		Player:SimulateDeath()
-		Player:RestoreDeath()
-	
-	Callbacks:
-		WARE:IsPlayable()
-		
-		WARE:Initialize()
-		
-		WARE:StartAction()
-		
-		WARE:PhaseStart( id )
-		WARE:PhaseEnds( id )
-
-		WARE:EndAction()
-		
-		WARE:Think( phase, remain )
-]]--
-
 module( "ware_manager", package.seeall )
 
 local minigames = {}
@@ -87,7 +25,7 @@ _G.BASE = nil
 function Register( name, ware )
 	ware.Name = ware.Name or name
 	ware.ID	  = name
-				
+	
 	if ( !ware.Initialize ) then
 		ErrorNoHalt( "Invalid minigame '" .. ware.Name .. "' ! Missing Initialize!" )
 		return

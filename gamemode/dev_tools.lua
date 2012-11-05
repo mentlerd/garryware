@@ -1,4 +1,6 @@
 
+RunConsoleCommand( "developer", "1" )
+
 timer.Simple( 10, function()
 	timer.Remove( "CheckHookTimes" )
 
