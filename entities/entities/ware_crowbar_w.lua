@@ -26,9 +26,7 @@ if ( SERVER ) then
 			phys:Wake()
 		end
 		
-		if ( SERVER ) then
-			GAMEMODE:AddToTrash( self )
-		end
+		GAMEMODE:AddToTrash( self )
 	end
 
 	function ENT:OnTakeDamage( dmginfo )
