@@ -2,6 +2,8 @@
 include( "shared.lua" )
 
 AddCSLuaFile( "cl_player_extension.lua" )
+AddCSLuaFile( "cl_timemanager.lua" )
+
 AddCSLuaFile( "cl_mapdecoration.lua" )
 
 include( "sv_player_extension.lua" )

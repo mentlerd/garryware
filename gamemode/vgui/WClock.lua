@@ -67,7 +67,7 @@ function PANEL:Paint( w, h )
 	surface.SetMaterial( self.MatShade )
 	surface.DrawTexturedRectRotated( 128, 128, 256, 256, self.StartAngle )
 
-	local angle = ( 360 * 0 )
+	local angle = 360 * ( GAMEMODE.ClockPercent or 0 )
 	
 	surface.SetDrawColor( 255, 255, 255, 255 )
 	
