@@ -86,7 +86,8 @@ function GM:SendStates( state, global, hide )
 			
 			if ( ply:IsLocked() ) then
 				net.Start( "ware_StateLock" )
-				net.Send( ply )
+					net.WriteEntity( ply )
+				net.Broadcast()
 			end
 		end
 	else
@@ -95,7 +96,8 @@ function GM:SendStates( state, global, hide )
 			
 			if ( ply:IsLocked() ) then
 				net.Start( "ware_StateLock" )
-				net.Send( ply )
+					net.WriteEntity( ply )
+				net.Broadcast()
 			end
 		end
 	end

@@ -32,6 +32,10 @@ end )
 
 
 
+function meta:IsWarePlayer()
+	return true -- TODO
+end
+
 function meta:GetState()
 	return self._state
 end
@@ -47,10 +51,12 @@ net.Receive( "ware_StateUpdate", function()
 		end
 		
 		for _, ply in pairs( player.GetAll() ) do
-			ply._state = state
+			ply._state	= state
+			
+			ply._lock	= nil
+			ply._time	= nil
 		end
 	
-		LocalPlayer()._lock = false
 		RunConsoleCommand( "r_cleardecals" )
 	else
 		for ply, state in pairs( net.ReadTable() ) do
@@ -64,10 +70,13 @@ function meta:IsLocked()
 end
 
 net.Receive( "ware_StateLock", function()
-	LocalPlayer()._lock	= true
+	local ply = net.ReadEntity()
+	
+	if ( IsValid( ply ) ) then
+		ply._lock = true
+		ply._time = CurTime()
+	end
 end )
-
-g_ScreenPopup = g_ScreenPopup or vgui.Create( "WScreenPopup" )
 
 net.Receive( "ware_Popup", function()
 	local text = net.ReadString()
