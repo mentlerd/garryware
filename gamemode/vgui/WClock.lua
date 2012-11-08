@@ -23,6 +23,10 @@ PANEL.ColorFallback		= Color( 0, 255, 0 )
 function PANEL:GetStatusColor()
 	local ply = LocalPlayer()
 	
+	if ( !IsValid( ply ) ) then 
+		return self.ColorFallback 
+	end
+	
 	local state	= ply:GetState()
 	local lock	= ply:IsLocked()
 	
