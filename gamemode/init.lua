@@ -38,6 +38,13 @@ function GM:GravGunPunt( ply, ent )
 	return !ent.GravGunBlocked
 end
 
+function GM:EntityTakeDamage( ent, dmginfo )
+	
+	if ( ent:IsPlayer() ) then
+		dmginfo:SetDamage( 0 )
+	end
+
+end
 
 _HookCall = _HookCall or hook.Call
 

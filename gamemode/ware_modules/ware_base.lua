@@ -56,22 +56,22 @@ function BASE:Setup()
 	
 	if ( !self.Room ) then return false end		
 	
-	if ( self.Room != GAMEMODE.CurrRoom ) then		
-		local spawns, found = self:GetRandomPoints( count, "spawn" )
-		if ( found <= 0 ) then 
-			GAMEMODE:Warning( "No spawnpoints in func_wareroom: " .. tostring( self.Room ) )
-			return false
-		end
+	local spawns, found = self:GetRandomPoints( count, "spawn" )
+	if ( found <= 0 ) then 
+		GAMEMODE:Warning( "No spawnpoints in func_wareroom: " .. tostring( self.Room ) )
 		
-		if ( found < count ) then
-			GAMEMODE:Warning( "func_wareroom provides less spawnpoints than MinPlayers" )
-		end
+		return false
+	elseif ( found < count ) then
+		GAMEMODE:Warning( "func_wareroom provides less spawnpoints than MinPlayers" )
+	end
+
+	-- TODO: Instead of saving this here, we should check for the real postition, since we have brushes as 'containers'
+	for index, ply in pairs( players ) do
+		if ( ply.CurrRoom != self.Room ) then
+			ply:SetPos( spawns[index % found +1] )
 		
-		for index = 1, count do
-			players[index]:SetPos( spawns[index % found +1] )
+			ply.CurrRoom = self.Room
 		end
-	
-		GAMEMODE.CurrRoom = self.Room
 	end
 	
 	self.Phase 		= -1
