@@ -4,7 +4,7 @@ AddCSLuaFile()
 include( "sh_meta_util.lua" )
 
 local vgui = {
-	"WClock", "WScreenPopup"
+	"WClock", "WScreenPopup", "WPlayerLabel", "WScoreBoard"
 }
 
 for _, file in pairs( vgui ) do

@@ -63,6 +63,8 @@ net.Receive( "ware_StateUpdate", function()
 			ply._state = state
 		end
 	end
+	
+	g_ScoreBoard:PerformScoreLayout()
 end )
 
 function meta:IsLocked()
@@ -76,6 +78,9 @@ net.Receive( "ware_StateLock", function()
 		ply._lock = true
 		ply._time = CurTime()
 	end
+	
+	-- TODO: This could be queued, and sent in one piece
+	g_ScoreBoard:PerformScoreLayout()
 end )
 
 net.Receive( "ware_Popup", function()
