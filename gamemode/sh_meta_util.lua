@@ -15,6 +15,14 @@ function net.ReadAny()
 	return net.ReadType( net.ReadUInt( 8 ) )
 end
 
+do
+	local meta = FindMetaTable( "Vector" )
+	
+	function meta:ToColor()
+		return Color( self.x, self.y, self.z )
+	end
+end
+
 if ( CLIENT ) then
 	local meta = FindMetaTable( "CLuaParticle" )
 
@@ -45,6 +53,5 @@ else
 	
 	function meta:Trail( mat, color, sW, eW, life, additive, att )
 		return util.SpriteTrail( self, att or 0, color, additive, sW, eW, life, 2 / (sW + eW), mat )
-	end
-	
+	end	
 end

@@ -109,7 +109,7 @@ function WARE:EntityTakeDamage( prop, dmginfo )
 	index = self.IsDesc and ( self.Numbers - index +1 ) or index
 		
 	if ( index == seqID ) then
-		prop:SetTextColor( self.Correct, att )
+		prop:SendTextColor( att, self.Correct )
 		
 		if ( self.Current[att] == self.Numbers ) then
 			att:ApplyWin()
@@ -117,8 +117,8 @@ function WARE:EntityTakeDamage( prop, dmginfo )
 	else
 		local good = self.Crates[index]
 		
-		prop:SetTextColor( self.Wrong, att )
-		good:SetTextColor( self.Target, att )
+		prop:SendTextColor( att, self.Wrong )
+		good:SendTextColor( att, self.Target )
 		
 		att:ApplyLose()
 	end

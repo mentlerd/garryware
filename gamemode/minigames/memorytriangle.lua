@@ -42,7 +42,7 @@ function WARE:Initialize()
 		number = number + math.random(1, 31)
 		
 		prop:SetText( number )
-		prop:SetTextColor( 	self.Colors[index][2] )
+		prop:SetTextColor( self.Colors[index][2] )
 		
 		self.Numbers[index]	= number
 		self.Crates[index]	= prop

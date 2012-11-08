@@ -93,7 +93,7 @@ function WARE:EntityTakeDamage( prop, dmginfo )
 	if ( self.PlayerCrates[ply][value] ) then return end
 		self.PlayerCrates[ply][value] = true
 
-	prop:SetTextColor( self.Progress, ply )
+	prop:SendTextColor( ply, self.Progress )
 	prop:GetPos():Effect( "ware_appear" )
 	
 	local sum = ( self.PlayerSum[ply] or 0 ) + value
@@ -107,9 +107,9 @@ function WARE:EntityTakeDamage( prop, dmginfo )
 		
 		for _, prop in pairs( self.Crates ) do
 			if ( self.PlayerCrates[ply][ prop.Value ] ) then
-				prop:SetTextColor( color, ply )
+				prop:SendTextColor( ply, color )
 			else
-				prop:SetTextColor( self.Inactive, ply )
+				prop:SendTextColor( ply, self.Inactive )
 			end
 		end
 	end

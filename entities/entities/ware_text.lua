@@ -4,7 +4,8 @@ AddCSLuaFile()
 ENT.Base	= "base_anim"
 
 function ENT:SetupDataTables()
-	self:NetworkVar( "String", 	0, "Text" )
+	self:NetworkVar( "String", 0, "Text" )
+	self:NetworkVar( "Vector", 0, "DefaultColor" )
 end
 
 if ( SERVER ) then
@@ -28,16 +29,15 @@ if ( SERVER ) then
 	util.AddNetworkString( "ware_TextColor" )
 	util.AddNetworkString( "ware_TextHide" )
 	
-	function ENT:SetTextColor( color, ply )
+	function ENT:SetTextColor( color )
+		self:SetNWVector( "DefaultColor", Vector( color.r, color.g, color.b ) )
+	end
+	
+	function ENT:SendTextColor( ply, color )
 		net.Start( "ware_TextColor" )
 			net.WriteEntity( self )
 			net.WriteTable( color )
-			
-		if ( ply ) then
-			net.Send( ply )
-		else
-			net.Broadcast()
-		end
+		net.Send( ply )
 	end
 		
 	function ENT:SetHidden( hide, ply )
@@ -61,6 +61,7 @@ else
 	} )
 
 	local DARK 				= Color( 10, 10, 10 )
+	local WHITE_VEC			= Vector( 255, 255, 255 )
 	
 	local TextCache			= {}
 	local TextCacheIsDirty	= false
@@ -84,18 +85,18 @@ else
 	
 	function ENT:DrawOnScreen()
 		if ( self.IsHidden ) then return end
-		
-		local pos = self:GetPos():ToScreen()
-			DARK.a = self.TextColor.a
-		
-		draw.SimpleTextOutlined( self:GetText(), "WareText_48",	pos.x, pos.y, self.TextColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, DARK )
+
+		local pos	= self:GetPos():ToScreen()
+		local color	= self.ColorOverride or self:GetNWVector( "DefaultColor", WHITE_VEC ):ToColor()
+	
+		draw.SimpleTextOutlined( self:GetText(), "WareText_48",	pos.x, pos.y, color, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 2, DARK )
 	end
 	
 	net.Receive( "ware_TextColor", function()
 		local ent = net.ReadEntity()
 
 		if ( IsValid( ent ) ) then
-			ent.TextColor = net.ReadTable()
+			ent.ColorOverride = net.ReadTable()
 		end
 	end )
 	
