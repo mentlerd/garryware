@@ -1,57 +1,54 @@
 
 -- TODO: Separate these, as the old code does
-GM.Announcers = {
-	{	
-		Sound( "ware/countdown_ann_sec1.mp3" ),
-		Sound( "ware/countdown_ann_sec2.mp3" ),
-		Sound( "ware/countdown_ann_sec3.mp3" ),
-		Sound( "ware/countdown_ann_sec4.mp3" ),
-		Sound( "ware/countdown_ann_sec5.mp3" )
-	},
-	{
-		Sound( "ware/countdown_tick_high.wav" ),
-		Sound( "ware/countdown_tick_low.wav"  ),
-		Sound( "ware/countdown_tick_high.wav" ),
-		Sound( "ware/countdown_tick_low.wav"  ),
-		Sound( "ware/countdown_tick_high.wav" )
-	}
+GM.TickHigh	= Sound( "ware/countdown_tick_high.wav" )
+GM.TickLow	= Sound( "ware/countdown_tick_low.wav" )
+
+GM.Announcer = {
+	Sound( "ware/countdown_ann_sec1.mp3" ),
+	Sound( "ware/countdown_ann_sec2.mp3" ),
+	Sound( "ware/countdown_ann_sec3.mp3" )
 }
 
 if ( file.Exists( "sound/vo/announcer_begins_1sec.wav", "GAME" ) ) then
-	GM.Announcers[1] = {
+	GM.Announcer = {
 		Sound( "vo/announcer_begins_1sec.wav" ),
 		Sound( "vo/announcer_begins_2sec.wav" ),
-		Sound( "vo/announcer_begins_3sec.wav" ),
-		Sound( "vo/announcer_begins_4sec.wav" ),
-		Sound( "vo/announcer_begins_5sec.wav" )
+		Sound( "vo/announcer_begins_3sec.wav" )
 	}
 end
-
 
 GM.WareIsPlaying	= false
 GM.WareInWindup		= false
 
-GM.WarePhases			= {}
-GM.WareAnnouncer		= 1
+GM.WarePhases		= {}
 
 function GM:Think()
 	
 	if ( self.ClockTime != nil ) then
 		local left	= self.ClockEnd - CurTime()
-		local sec	= math.ceil( left )
 		
-		if ( sec <= 0 ) then
+		if ( left <= 0 ) then
 			self.ClockTime		= nil
 			self.ClockPercent	= 0
 		else
-			if ( !self.WareInWindup and self.WareAnnouncer > 0 ) then
-				if ( sec <= 5 and self.ClockAnnounced != sec ) then
-					surface.PlaySound( self.Announcers[self.WareAnnouncer][sec] )
-					self.ClockAnnounced = sec
-				end
-			end
-			
 			self.ClockPercent = left / self.ClockTime
+		
+			if ( !self.WareInWindup ) then
+				local tick = math.ceil( left *3 )
+				
+				if ( tick < self.ClockLastTick ) then
+					self.ClockLastTick = tick
+				
+					if ( left < 3 and tick % 3 == 0 ) then
+						surface.PlaySound( self.Announcer[tick / 3] )
+					end
+					
+					if ( left < 5 ) then
+						surface.PlaySound( (tick % 2 == 0 ) and self.TickHigh or self.TickLow )
+					end
+
+				end
+			end	
 		end
 	end
 	
@@ -62,7 +59,7 @@ function GM:SetClockTime( sec )
 
 	if ( sec != nil ) then
 		self.ClockEnd		= CurTime() + sec
-		self.ClockAnnounced	= 0
+		self.ClockLastTick	= 100
 	end
 end
 
