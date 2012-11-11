@@ -22,41 +22,17 @@ function WARE:Initialize()
 	self.BoxTop = self:GetPoints( ONCRATE )
 end
 
-local function spawnModel( model, id )
-	local point = GAMEMODE.Ware:GetRandomPoints( 1, AIR )[1]
-	
-	local prop = point:MakeEntity( "prop_physics_override" )
-	
-	prop:SetModel( model )
-	
-	prop:SetAngles( AngleRand() )
-	prop:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
-
-	prop:Spawn()
-	
-	local phys = prop:GetPhysicsObject()
-	if ( IsValid( phys ) ) then
-		phys:ApplyForceCenter( VectorRand() * math.random( 256, 468 ) * phys:GetMass() )
-		phys:Wake()
-	else
-		prop:Remove()
-	end
-end
-
 function WARE:StartAction()
 	self:Instruction( "Rules are easy : Do what it tells you to do!" )
 	self:GiveAll( "weapon_physcannon" )
 	
 	if ( GAMEMODE.ModelPrecacheHash ) then
-		local delay = 0
-		
+		self.ToSpawn = {}
+		self.NextSpawn = 0
+	
 		for model, _ in pairs( GAMEMODE.ModelPrecacheHash ) do
-			timer.Simple( delay, function()
-				spawnModel( model )
-			end )
-			
-			delay = delay + 0.3	-- TODO: UNRELYABLE!
-		end
+			table.insert( self.ToSpawn, model )
+		end	
 	end
 end
 
@@ -75,6 +51,29 @@ function WARE:EndAction()
 end
 
 function WARE:Think( phase )
+	
+	if ( #self.ToSpawn > 0 and self.NextSpawn < CurTime() ) then
+		local point = self:GetRandomPoints( 1, AIR )[1]
+		local prop	= point:MakeEntity( "prop_physics_override" )
+		
+		prop:SetModel( table.remove( self.ToSpawn ) )
+	
+		prop:SetAngles( AngleRand() )
+		prop:SetCollisionGroup( COLLISION_GROUP_DEBRIS )
+
+		prop:Spawn()
+	
+		local phys = prop:GetPhysicsObject()
+		if ( IsValid( phys ) ) then
+			phys:ApplyForceCenter( VectorRand() * math.random( 256, 468 ) * phys:GetMass() )
+			phys:Wake()
+		else
+			prop:Remove()
+		end
+		
+		self.NextSpawn = CurTime() + 0.2
+	end
+	
 	if ( phase < 2 ) then return end
 
 	for _, block in pairs( self.BoxTop ) do
