@@ -4,20 +4,14 @@ local PANEL = {}
 function PANEL:Init()
 	self.PlayerPanels = {}
 	
-	self:SetMinimumSize( 800, 800 )
+	self:SetSize( ScrW(), 800 )
 end
 
-local function PlayerComparator( plyA, plyB )
-	if ( plyA._first ) then return true		end
-	if ( plyB._first ) then return false	end
+function PlayerComparator( panelA, panelB )
+	local plyA = panelA.Player._time or math.huge
+	local plyB = panelB.Player._time or math.huge
 	
-	if ( plyA._lock ) then
-		return !plyB._lock or ( plyA.time < plyB.time )
-	elseif ( plyB._lock ) then
-		return false
-	else
-		return plyA:GetName() < plyB:GetName()
-	end
+	return plyA < plyB
 end
 
 function PANEL:PerformScoreLayout()
@@ -35,12 +29,13 @@ function PANEL:PerformScoreLayout()
 		
 		if ( !IsValid( entry ) ) then
 			entry = vgui.Create( "WPlayerLabel", self )
-			entry:SetSize( 400, 32 )
+			entry:SetSize( 500, 20 )
 			entry:SetPlayer( ply )
 			
 			self.PlayerPanels[ply] = entry
 		end
 		
+		entry.first = false 	-- TODO: Make the server tell this!
 		entry:RefreshPlayerState()
 		
 		if ( ply:IsWarePlayer() ) then
@@ -49,22 +44,33 @@ function PANEL:PerformScoreLayout()
 	end
 	
 	if ( false ) then	-- TODO: States are hidden?
-		for index, panel in pairs( loserList ) do
-			panel:MoveTo( 200, index * 32, 0.2, 0, 2 )
+		for index, panel in pairs( loserList ) do		
+			self:MovePanel( panel, 1, index ) -- TODO
 		end
 	else
 		table.sort( winnerList, PlayerComparator )
 		table.sort( loserList, PlayerComparator )
+	
+		if ( #winnerList > 0 ) then
+			winnerList[1].first = true	-- TODO: Make the server tell this!
+		end
 		
 		for index, panel in pairs( winnerList ) do
-			panel:MoveTo( 10, index * 32, 0.2, 0, 2 )		
+			panel:MoveTo( 10, index * 20, 0.2, 0, 2 )
+			self:MovePanel( panel, 1, index )			
 		end
 		
 		for index, panel in pairs( loserList ) do
-			panel:MoveTo( 400, index * 32, 0.2, 0, 2 )
+			self:MovePanel( panel, 2, index )			
 		end
 	end
+end
 
+function PANEL:MovePanel( panel, column, index )
+	local w, h = panel:GetSize()
+	
+	panel:MoveTo( (ScrW()/3) *column - w/2, index * h, 0.2, 0, 2 )
+	-- TODO: Multiple rows, and nice stuff for later
 end
 
 function PANEL:Paint()
@@ -72,11 +78,3 @@ function PANEL:Paint()
 end
 
 vgui.Register( "WScoreBoard", PANEL, "DPanel" )
-
-if ( IsValid( g_Test ) ) then
-	g_Test:Remove()
-end
-
-g_Test = vgui.Create( "WScoreBoard" )
-g_Test:SetPos( 100, 100 )
-g_Test:SetSize( 1024, 800 )
