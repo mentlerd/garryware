@@ -6,7 +6,6 @@ function GM:ReportWareInfo()
 	
 	net.Start( "ware_WareInfo" )
 		net.WriteInt( self.Ware.Windup, 8 )
-		net.WriteTable( self.Ware.Phases )
 	net.Broadcast()
 end
 
@@ -18,6 +17,13 @@ function GM:ReportWarePhase()
 
 	net.Start( "ware_WarePhase" )
 		net.WriteBool( self.Ware.IsPlaying )
-		net.WriteInt( self.Ware.Phase or -1, 8 )
+		
+		net.WriteInt( self.Ware.Phase		or -1, 8 )
+		
+		if ( self.Ware.NextPhase ) then
+			net.WriteInt( self.Ware.NextPhase - CurTime(), 8 )
+		else
+			net.WriteInt( -1, 8 )
+		end
 	net.Broadcast()
 end

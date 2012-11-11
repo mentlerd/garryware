@@ -1,5 +1,7 @@
 
 -- TODO: Separate these, as the old code does
+-- TODO: Multiple announcer support, ability to disable the announcer
+
 GM.TickHigh	= Sound( "ware/countdown_tick_high.wav" )
 GM.TickLow	= Sound( "ware/countdown_tick_low.wav" )
 
@@ -19,8 +21,6 @@ end
 
 GM.WareIsPlaying	= false
 GM.WareInWindup		= false
-
-GM.WarePhases		= {}
 
 function GM:Think()
 	
@@ -73,7 +73,7 @@ function GM:OnWareReported( windup, phases )
 	self:SetClockTime( self.WareWindup )
 end
 
-function GM:OnPhaseReported( isPlaying, phase )
+function GM:OnPhaseReported( isPlaying, phase, length )
 	if ( self.WareIsPlaying != isPlaying ) then		
 		self.WareIsPlaying = isPlaying
 
@@ -86,13 +86,15 @@ function GM:OnPhaseReported( isPlaying, phase )
 		end
 	end
 	
-	self:SetClockTime( self.WarePhases[phase +1] )
+	if ( length != -1 ) then
+		self:SetClockTime( length )
+	end
 end
 
 net.Receive( "ware_WareInfo", function()
-	GAMEMODE:OnWareReported( net.ReadInt( 8 ), net.ReadTable() )
+	GAMEMODE:OnWareReported( net.ReadInt( 8 ) )
 end )
 
 net.Receive( "ware_WarePhase", function()
-	GAMEMODE:OnPhaseReported( net.ReadBool(), net.ReadInt( 8 ) )
+	GAMEMODE:OnPhaseReported( net.ReadBool(), net.ReadInt( 8 ), net.ReadInt( 8 ) )
 end )
