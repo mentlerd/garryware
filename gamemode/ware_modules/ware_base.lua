@@ -47,7 +47,7 @@ function BASE:Setup()
 	local count		= #players
 
 	if ( !self:IsPlayable( count ) ) then return false end
-	
+
 	if ( self.Room == ROOM_ANY ) then
 		self.Room = GAMEMODE.CurrRoom
 	else
@@ -65,6 +65,9 @@ function BASE:Setup()
 		GAMEMODE:Warning( "func_wareroom provides less spawnpoints than MinPlayers" )
 	end
 
+	-- TODO: Better room management
+	GAMEMODE.CurrRoom = self.Room
+	
 	-- TODO: Instead of saving this here, we should check for the real postition, since we have brushes as 'containers'
 	for index, ply in pairs( players ) do
 		if ( ply.CurrRoom != self.Room ) then
@@ -73,7 +76,7 @@ function BASE:Setup()
 			ply.CurrRoom = self.Room
 		end
 	end
-	
+		
 	self.Phase 		= -1
 	self.NextPhase	= CurTime() + self.Windup
 	self.Trash		= {}
@@ -109,15 +112,15 @@ end
 function BASE:InternalEnd()
 	self.Phase		= nil
 	self.IsPlaying 	= false
-
-	GAMEMODE:UpdatePlayerStates( true )
-	GAMEMODE:ReportWarePhase()
-	
+		
 	for _, ply in pairs( self:GetPlayers() ) do
-		if ( !ply:IsLocked() or self.HideStates ) then
+		if ( !ply:IsLocked() or self.HideStates ) then		
 			GAMEMODE:PlayerStateEffect( ply, ply:GetState() )
 		end
 	end	
+	
+	GAMEMODE:UpdatePlayerStates( true )
+	GAMEMODE:ReportWarePhase()
 	
 	self:SafeCall( self.EndAction )
 end
@@ -173,7 +176,6 @@ function BASE:ForceNextPhase()
 		self:InternalEnd()
 	else
 		self.Phase 		= self.Phase +1
-		
 		self.NextPhase	= CurTime() + phases[ self.Phase +1 ]
 		
 		if ( self.Phase == 0 ) then
