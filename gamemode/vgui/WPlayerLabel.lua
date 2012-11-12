@@ -16,7 +16,7 @@ surface.CreateFont( "WareText_16", {
 local default	= Material( "vgui/avatar_default" )
 local avatar	= Material( "ware/interface/avatar_default.png" )
 	default:SetTexture( "$basetexture", avatar:GetTexture( "$basetexture" ) )
-
+	
 /*
 do
 	local matArrowInner	= Material( "ware/interface/arrow_inner.png", MAT_SMOOTH )
@@ -144,4 +144,3 @@ end
 
 vgui.Register( "WPlayerLabel", PANEL, "DPanel" )
 
-RunConsoleCommand( "ware_debug_scoreboard" )
