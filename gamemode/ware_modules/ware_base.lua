@@ -90,8 +90,8 @@ function BASE:Setup()
 		ply:RestoreDeath()
 	end
 
+	GAMEMODE:UpdatePlayerStates( true )
 	GAMEMODE:ReportWareInfo()
-	GAMEMODE:SendStates( self.InitialState, true, self.HideStates )
 	
 	self.IsPlaying 	= true
 	return true

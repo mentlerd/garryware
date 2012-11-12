@@ -16,7 +16,6 @@ function meta:IsLocked()
 	return self._stateLock
 end
 
-
 function meta:GetState()
 	return self._state
 end
@@ -43,7 +42,9 @@ function meta:ApplyState( state, lock )
 	self._state 		= state
 	self._stateLock		= lock
 	
-	if ( lock and !ware.HideStates ) then
+	if ( lock ) then
+		self._stateSent	= nil	-- Force state update
+		
 		if ( !ware.HideStates ) then
 			GAMEMODE:PlayerStateEffect( self, state )
 		
@@ -59,68 +60,39 @@ end
 function meta:ResetState( default )
 	self._stateLock 	= false
 
-	self._state			= default	
+	self._state			= default or false
 	self._stateSent		= nil
 end
 
-util.AddNetworkString( "ware_StateLock" )
 util.AddNetworkString( "ware_StateUpdate" )
-
-function GM:SendStates( state, global, hide )
-	if ( !self.Ware ) then return end
-	
-	net.Start( "ware_StateUpdate" )
-		net.WriteBool( global )
-	
-		if ( global ) then
-			net.WriteBool( state )
-			net.WriteBool( hide )
-		else
-			net.WriteTable( state )
-		end		
-	net.Broadcast()
-	
-	if ( global ) then
-		for _, ply in pairs( self.Ware:GetPlayers() ) do
-			ply._stateSent = state
-			
-			if ( ply:IsLocked() ) then
-				net.Start( "ware_StateLock" )
-					net.WriteEntity( ply )
-				net.Broadcast()
-			end
-		end
-	else
-		for ply, state in pairs( state ) do
-			ply._stateSent = state
-			
-			if ( ply:IsLocked() ) then
-				net.Start( "ware_StateLock" )
-					net.WriteEntity( ply )
-				net.Broadcast()
-			end
-		end
-	end
-end
 
 function GM:UpdatePlayerStates( force )
 	if ( !force and ( !self.Ware or self.Ware.HideStates ) ) then return end
-	
-	local change = {}
-	local hasAny = false
+
+	local hasAny = false	
+	local states = {}
 	
 	for _, ply in pairs( self.Ware:GetPlayers() ) do
-		local state = ply._state
+		local state = ply:GetState()
 		
 		if ( ply._stateSent != state ) then
-			change[ ply ] 	= state
+			ply._stateSent = state
+			
+			states[ply] = {
+				state	= state,
+				lock	= ply:IsLocked()
+			}
+			
 			hasAny = true
 		end
 	end
 	
 	if ( hasAny ) then
-		self:SendStates( change )
+		net.Start( "ware_StateUpdate" )		
+			net.WriteTable( states )
+		net.Broadcast()
 	end
+
 end
 
 

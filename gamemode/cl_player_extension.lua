@@ -41,26 +41,14 @@ function meta:GetState()
 end
 
 net.Receive( "ware_StateUpdate", function()
-	local global = net.ReadBool()
-		
-	if ( global ) then
-		local state = net.ReadBool()
-		
-		if ( net.ReadBool() ) then
-			state = nil
-		end
-		
-		for _, ply in pairs( player.GetAll() ) do
-			ply._state	= state
-			
-			ply._lock	= nil
-			ply._time	= nil
-		end
+	local states = net.ReadTable()
 	
-		RunConsoleCommand( "r_cleardecals" )
-	else
-		for ply, state in pairs( net.ReadTable() ) do
-			ply._state = state
+	for ply, state in pairs( states ) do
+		ply._state 	= state.state
+		ply._lock	= state.lock
+
+		if ( state.lock ) then
+			ply._time	= CurTime() 	-- TODO
 		end
 	end
 	
@@ -70,18 +58,6 @@ end )
 function meta:IsLocked()
 	return self._lock
 end
-
-net.Receive( "ware_StateLock", function()
-	local ply = net.ReadEntity()
-	
-	if ( IsValid( ply ) ) then
-		ply._lock = true
-		ply._time = CurTime()
-	end
-	
-	-- TODO: This could be queued, and sent in one piece
-	g_ScoreBoard:PerformScoreLayout()
-end )
 
 net.Receive( "ware_Popup", function()
 	local text = net.ReadString()

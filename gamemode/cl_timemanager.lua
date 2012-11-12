@@ -63,9 +63,10 @@ function GM:SetClockTime( sec )
 	end
 end
 
-function GM:OnWareReported( windup, phases )
-	self.WareWindup		= windup
-	self.WarePhases		= phases
+function GM:OnWareReported()
+	RunConsoleCommand( "r_cleardecals" )
+
+	self.WareWindup		= net.ReadInt( 8 )
 
 	self.WareIsPlaying		= false
 	self.WareInWindup		= true
@@ -73,7 +74,11 @@ function GM:OnWareReported( windup, phases )
 	self:SetClockTime( self.WareWindup )
 end
 
-function GM:OnPhaseReported( isPlaying, phase, length )
+function GM:OnPhaseReported()
+	local isPlaying	= net.ReadBool()
+	local phase		= net.ReadInt( 8 )
+	local length	= net.ReadInt( 8 )
+
 	if ( self.WareIsPlaying != isPlaying ) then		
 		self.WareIsPlaying = isPlaying
 
@@ -92,9 +97,9 @@ function GM:OnPhaseReported( isPlaying, phase, length )
 end
 
 net.Receive( "ware_WareInfo", function()
-	GAMEMODE:OnWareReported( net.ReadInt( 8 ) )
+	GAMEMODE:OnWareReported()
 end )
 
 net.Receive( "ware_WarePhase", function()
-	GAMEMODE:OnPhaseReported( net.ReadBool(), net.ReadInt( 8 ), net.ReadInt( 8 ) )
+	GAMEMODE:OnPhaseReported()
 end )
