@@ -10,7 +10,7 @@ GM.WarePath	= "minigames"
 
 function GM:LoadWareGames()
 	local base	= self.Folder .. "/gamemode/" .. self.WarePath .. "/"
-	local games = file.Find( base .. "*", "GAME" )
+	local games = file.Find( base .. "*.lua", "GAME" )
 		
 	MsgN( "Loading minigames..." )
 	for _, game in pairs( games ) do
@@ -67,14 +67,14 @@ end
 	Game Loop
 ]]--
 
-SetGlobalBool( "IsGameEnd", false )
+GM.IsGameEnd 	= false
 
 function GM:PollNextWare()
 	return table.remove( self.WareSequence )
 end
 
 function GM:WareThink()
-	if ( GetGlobalBool( "IsGameEnd", false ) ) then return end
+	if ( self.IsGameEnd ) then return end
 	
 	if ( self.Ware ) then
 		if ( !self.Ware.IsPlaying ) then	
@@ -107,7 +107,7 @@ function GM:WareThink()
 				if ( !self.Ware ) then
 					MsgN( "No wares left, game ended" )
 					
-					SetGlobalBool( "IsGameEnd", true )
+					self.IsGameEnd = true
 					return
 				end
 				
